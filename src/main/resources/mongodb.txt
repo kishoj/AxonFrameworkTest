@@ -1,0 +1,20 @@
+-- Command line client to MongoDB
+$ mongo --host 127.0.0.1:27017
+
+-- Changing to MongoDB Event Store configured from Axon
+> use mongo_event_store
+
+-- Checking the databases
+> show collections
+    domainevents
+    sagas
+    snapshotevents
+
+-- Checking event records in domainevents
+> db.domainevents.find()
+
+-- Checking sagas records in sagas
+> db.sagas.find()
+
+-- Checking snapshot event records in snapshotevents
+> db.snapshotevents.find()

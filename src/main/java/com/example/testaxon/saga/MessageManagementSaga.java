@@ -3,6 +3,7 @@ package com.example.testaxon.saga;
 import org.axonframework.spring.stereotype.Saga;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.testaxon.command.saga.MarkMessageDeliveredCommand;
 import com.example.testaxon.command.saga.MarkMessageTransferFailedCommand;
@@ -10,12 +11,11 @@ import com.example.testaxon.event.MessageSentEvent;
 import com.example.testaxon.event.saga.MessageDeliveredMarkedEvent;
 import com.example.testaxon.event.saga.ReceiverNotFoundEvent;
 
-import static org.axonframework.commandhandling.GenericCommandMessage.asCommandMessage;
+//import static org.axonframework.commandhandling.GenericCommandMessage.asCommandMessage;
 
-import javax.inject.Inject;
-
-import org.axonframework.commandhandling.CommandBus;
+//import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.callbacks.LoggingCallback;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.saga.EndSaga;
 import org.axonframework.eventhandling.saga.SagaEventHandler;
 import org.axonframework.eventhandling.saga.SagaLifecycle;
@@ -27,14 +27,18 @@ public class MessageManagementSaga {
 
 	private boolean isDelivered = false;
 
-	@Inject
-	private transient CommandBus commandBus;
+	/*@Autowired
+	private transient CommandBus commandBus;*/
+	
+    @Autowired
+    private transient CommandGateway commandGateway;
 
 	@StartSaga
 	@SagaEventHandler(associationProperty = "messageId")
 	public void on(MessageSentEvent event) {
 		LOGGER.info("Saga Event Handler after message received from RabbitMQ");
-		commandBus.dispatch(asCommandMessage(new MarkMessageDeliveredCommand(event.getMessageId())), LoggingCallback.INSTANCE);
+		//commandBus.dispatch(asCommandMessage(new MarkMessageDeliveredCommand(event.getMessageId())), LoggingCallback.INSTANCE);
+		commandGateway.send(new MarkMessageDeliveredCommand(event.getMessageId()), LoggingCallback.INSTANCE);
 		LOGGER.info("MarkMessageDeliveredCommand is fired from Saga");
 	}
 
@@ -43,7 +47,8 @@ public class MessageManagementSaga {
 	public void on(ReceiverNotFoundEvent event) {
 		LOGGER.info("Saga Event Ending!.....");
 		MarkMessageTransferFailedCommand markFailedCommand = new MarkMessageTransferFailedCommand(event.getMessageId());
-		commandBus.dispatch(asCommandMessage(markFailedCommand), LoggingCallback.INSTANCE);
+		commandGateway.send(markFailedCommand, LoggingCallback.INSTANCE);
+		//commandBus.dispatch(asCommandMessage(markFailedCommand), LoggingCallback.INSTANCE);
 	}
 
 	@SagaEventHandler(associationProperty = "messageId")

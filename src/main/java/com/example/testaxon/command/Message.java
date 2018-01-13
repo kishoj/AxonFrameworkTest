@@ -69,6 +69,12 @@ public class Message {
     	LOGGER.info("MarkMessageTransferFailedCommand is handle here!.....");
         this.status = Status.FAILED;
     }
+    
+    @EventHandler
+    protected void applySnapshot(MessageDeliveredMarkedEvent event) {
+    	LOGGER.info("Apply Snapshot!.....");
+        this.status = Status.COMPLETED;
+    }
 	
 	private enum Status {
         STARTED,
