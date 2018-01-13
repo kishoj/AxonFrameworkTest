@@ -4,8 +4,8 @@ import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;
 
 public interface MessagingChannel {
-	String SUBSCRIBER = "message.topic";
+	String NAME = "message.topic";
 
-	@Input(SUBSCRIBER)
+	@Input(NAME)
 	SubscribableChannel subscriber();
 }

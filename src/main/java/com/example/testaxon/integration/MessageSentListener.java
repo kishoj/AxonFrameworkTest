@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class MessageSentListener {
 	private final static Logger LOGGER = LoggerFactory.getLogger(MessageSentListener.class);
 	
-	@StreamListener(target = MessagingChannel.SUBSCRIBER)
+	@StreamListener(target = MessagingChannel.NAME)
 	public void onReceived(MessageForwarderSrv.MessageSentEvent event) {
 		LOGGER.info("Received Message from RabbitMQ.topic " + event.toString());
 		LOGGER.info(event.toString());

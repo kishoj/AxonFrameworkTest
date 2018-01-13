@@ -36,7 +36,8 @@ public class Message {
 		apply(new MessageSentEvent(
 			command.getMessageId(),
 			command.getMessage(),
-			command.getSender()));
+			command.getSender()
+			));
 	}
 	
 	@EventSourcingHandler

@@ -44,11 +44,15 @@ public class MongoConfiguration {
 	public StorageStrategy storageStrategy() {
 		return new DocumentPerCommitStorageStrategy();
 	}
+	
+	// If Upcaster is not used then use eventStorageEngine()
+	/*@Bean
+	public MongoEventStorageEngine eventStorageEngine() {
+		return new MongoEventStorageEngine(axonMongoTemplate());
+	}*/
 
 	@Bean
 	public MongoEventStorageEngine eventStorageEngine(Serializer serializer, SingleEventUpcaster upcaster) {
-		// If we dont use upcaster
-		//return new MongoEventStorageEngine(axonMongoTemplate());
 		return new MongoEventStorageEngine(serializer, upcaster, axonMongoTemplate(), storageStrategy());
 	}
 

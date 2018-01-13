@@ -39,7 +39,7 @@ public class MessageForwarderSrv {
 		private UUID messageId;
 		private String message;
 		private String sender;
-
+		
 		public MessageSentEvent(UUID messageId, String message, String sender) {
 			this.messageId = messageId;
 			this.message = message;

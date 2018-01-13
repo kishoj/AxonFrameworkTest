@@ -20,7 +20,8 @@ public class MessageSentEventListener {
 		repository.save(new MessageQueryObject(
 			event.getMessageId(), 
 			event.getMessage(),
-			event.getSender()));
+			event.getSender()
+			));
 	}
 
 }
