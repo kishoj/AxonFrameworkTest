@@ -5,7 +5,7 @@ import java.util.UUID;
 public class SendMessageCommand {
 	
 	private UUID messageId;
-	private String message;
+	private String message;	
 	
 	private String sender;
 

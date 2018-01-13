@@ -2,32 +2,33 @@ package com.example.testaxon.config.saga;
 
 import javax.annotation.PostConstruct;
 
-import org.axonframework.common.jpa.EntityManagerProvider;
 import org.axonframework.config.Configurer;
 import org.axonframework.config.DefaultConfigurer;
 import org.axonframework.config.SagaConfiguration;
 import org.axonframework.eventhandling.saga.repository.SagaStore;
-import org.axonframework.eventhandling.saga.repository.jpa.JpaSagaStore;
+import org.axonframework.mongo.MongoTemplate;
+import org.axonframework.mongo.eventhandling.saga.repository.MongoSagaStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.example.testaxon.config.mongo.MongoConfiguration;
 import com.example.testaxon.saga.MessageManagementSaga;
 
-@Profile("default")
+@Profile("mongo")
 @Configuration
-public class SagaConfig {
-
+@AutoConfigureAfter(MongoConfiguration.class)
+public class SagaMongoConfig {
+	
 	@Autowired
-	private EntityManagerProvider entityManagerProvider;
+	private MongoTemplate axonMongoTemplate;
 
 	@PostConstruct
 	public void init() {
 		Configurer configurer = DefaultConfigurer.defaultConfiguration();
-		/*configurer.registerModule(SagaConfiguration.subscribingSagaManager(MessageManagementSaga.class)
-				.configureSagaStore(c -> new JpaSagaStore(entityManagerProvider)));*/
-		configurer.registerComponent(SagaStore.class, c -> new JpaSagaStore(entityManagerProvider));
+		configurer.registerComponent(SagaStore.class, c -> new MongoSagaStore(axonMongoTemplate));
 	}
 
 	@SuppressWarnings("rawtypes")

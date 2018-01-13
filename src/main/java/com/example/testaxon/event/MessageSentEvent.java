@@ -7,10 +7,11 @@ import org.axonframework.serialization.Revision;
 import com.example.testaxon.config.replay.Replayable;
 
 @Replayable
-@Revision("1.0")
+@Revision("2.0")
 public class MessageSentEvent {
 	// For Revision 1.0
 	private UUID messageId;
+	
 	private String message;
 	
 	// For Revision 2.0
