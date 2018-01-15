@@ -1,0 +1,12 @@
+-- Querying in Event Store
+SELECT encode(payload, 'escape') as message FROM domain_event_entry WHERE encode(payload, 'escape') ilike '%MessageSentEvent%';
+
+-- Updating the Event Store
+UPDATE domain_event_entry 
+SET payload = decode(quote_literal(replace(encode(payload, 'escape'), '<sender>Kishoj</sender>','<sender>Kishoj Bajracharya</sender>')), 'escape') WHERE encode(payload, 'escape') ilike '%MessageSentEvent%';
+
+-- Updating the Event Store
+UPDATE domain_event_entry
+SET payload = decode(E'<com.example.testaxon.event.MessageSentEvent><messageId>ff63c492-d83a-4ccb-92a6-e796fc2eeb7a</messageId><message>Hello World</message><sender>Kishoj</sender></com.example.testaxon.event.MessageSentEvent>', 'escape')
+WHERE encode(payload, 'escape') ilike '%MessageSentEvent%' AND 
+encode(payload, 'escape') like '%<messageId>ff63c492-d83a-4ccb-92a6-e796fc2eeb7a</messageId>%'; 
