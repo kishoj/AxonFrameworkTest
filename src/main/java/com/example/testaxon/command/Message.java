@@ -15,9 +15,10 @@ import org.slf4j.LoggerFactory;
 import com.example.testaxon.command.saga.MarkMessageDeliveredCommand;
 import com.example.testaxon.command.saga.MarkMessageTransferFailedCommand;
 import com.example.testaxon.event.MessageSentEvent;
+import com.example.testaxon.event.MessageUpdatedEvent;
 import com.example.testaxon.event.saga.MessageDeliveredMarkedEvent;
 
-@Aggregate
+@Aggregate(repository = "messageRepository")
 public class Message {
 	private final static Logger LOGGER = LoggerFactory.getLogger(Message.class);
 
@@ -33,11 +34,33 @@ public class Message {
 	
 	@CommandHandler
 	Message(SendMessageCommand command) {
+		// Version 1
+		/*apply(new MessageSentEvent(
+				command.getMessageId(),
+				command.getMessage()
+				));*/
+		// Version 2
 		apply(new MessageSentEvent(
 			command.getMessageId(),
 			command.getMessage(),
 			command.getSender()
 			));
+	}
+	
+	@CommandHandler
+	public void on(UpdateMessageCommand updateMessage) {
+		apply(new MessageUpdatedEvent(
+				updateMessage.getMessageId(),
+				updateMessage.getMessage(),
+				updateMessage.getSender()
+				));
+	}
+	
+	@EventSourcingHandler
+	public void on(MessageUpdatedEvent event) {
+		this.messageId = event.getMessageId();
+		this.status = Status.STARTED;
+		LOGGER.info("MessageUpdatedEvent is started!.....");
 	}
 	
 	@EventSourcingHandler

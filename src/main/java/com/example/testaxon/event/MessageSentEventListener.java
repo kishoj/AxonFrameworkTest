@@ -16,7 +16,20 @@ public class MessageSentEventListener {
 	}
 	
 	@EventHandler
+	public void on(MessageUpdatedEvent event) {
+		MessageQueryObject object = repository.findOne(event.getMessageId());
+		repository.save(object);
+	}
+	
+	@EventHandler
 	public void on(MessageSentEvent event) {
+		// For Revision 1.0
+		/*repository.save(new MessageQueryObject(
+			event.getMessageId(), 
+			event.getMessage()
+			));*/
+		
+		// For Revision 2.0
 		repository.save(new MessageQueryObject(
 			event.getMessageId(), 
 			event.getMessage(),

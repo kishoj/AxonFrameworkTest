@@ -12,11 +12,13 @@ import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.testaxon.command.SendMessageCommand;
+import com.example.testaxon.command.UpdateMessageCommand;
 import com.example.testaxon.queryobject.MessageQueryObject;
 import com.example.testaxon.queryobject.MessageQueryObjectRepository;
 
@@ -51,6 +53,17 @@ public class MessageAPI {
 		return commandGateway.send(
 			new SendMessageCommand(
 				UUID.randomUUID(), 
+				request.get("message"),
+				request.get("sender"))
+		);
+	}
+	
+	@PutMapping("/{id}")
+	public CompletableFuture<String> modifyMessage(@PathVariable String id, @RequestBody Map<String, String> request) {
+		LOGGER.info("PUT /messages -> PUT message to update");
+		return commandGateway.send(
+			new UpdateMessageCommand(
+				UUID.fromString(id), 
 				request.get("message"),
 				request.get("sender"))
 		);
